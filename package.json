@@ -1,0 +1,82 @@
+{
+  "name": "basil-draw",
+  "productName": "Basil Draw",
+  "version": "0.3.0",
+  "description": "A friendly vector drawing program in the spirit of the classic 1990s Windows drawing apps.",
+  "main": "src/main/main.js",
+  "author": "Daniel Mouritsen",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "test": "node test/smoke.mjs",
+    "dist:mac": "electron-builder --mac --publish never",
+    "dist:win": "electron-builder --win --publish never",
+    "dist:linux": "electron-builder --linux --publish never"
+  },
+  "devDependencies": {
+    "electron": "44.9.3",
+    "electron-builder": "26.15.7"
+  },
+  "build": {
+    "appId": "com.mouritsen.basildraw",
+    "productName": "Basil Draw",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "fileAssociations": [
+      {
+        "ext": "bdraw",
+        "name": "Basil Draw Drawing",
+        "role": "Editor"
+      },
+      {
+        "ext": "pdraw",
+        "name": "Basil Draw Drawing (old)",
+        "role": "Editor"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.graphics-design",
+      "target": [
+        "dmg"
+      ],
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "build/icon.png"
+    },
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Basil Draw",
+      "artifactName": "Basil-Draw-Setup-${version}.${ext}",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico"
+    },
+    "publish": null
+  }
+}

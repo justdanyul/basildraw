@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self' data:">
+  <title>Basil Draw</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <div id="topbar">
+      <div id="tb-left"><span id="app-logo" title="Basil Draw"></span><div id="menubar" role="menubar"></div></div>
+      <div id="doc-title"></div>
+      <div id="tb-right"></div>
+    </div>
+    <div id="toolbar-standard" class="toolbar"></div>
+    <div id="toolbar-format" class="toolbar"></div>
+    <div id="main">
+      <div id="toolbox"></div>
+      <div id="docarea">
+        <div id="ruler-corner"></div>
+        <div id="ruler-h" class="ruler"></div>
+        <div id="ruler-v" class="ruler"></div>
+        <div id="scroller">
+          <div id="pasteboard">
+            <svg id="canvas" xmlns="http://www.w3.org/2000/svg" data-tool="select">
+              <defs id="imgdefs"></defs>
+              <g id="page-g"></g>
+              <g id="objects"></g>
+              <g id="overlay"></g>
+            </svg>
+          </div>
+        </div>
+        <div id="layertabs"></div>
+        <div id="finished" class="floating" hidden>
+          <div class="fin-title"><span id="finished-name">Rectangle</span><button id="finished-x" title="Close">✕</button></div>
+          <button id="finished-btn" class="btn">Finished</button>
+        </div>
+      </div>
+    </div>
+    <div id="statusbar"></div>
+  </div>
+  <div id="popup-layer"></div>
+  <div id="dialog-layer"></div>
+  <div id="print-area"></div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
