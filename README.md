@@ -21,9 +21,9 @@ npm start          # opens Basil Draw
 
 | Platform | Command | Result in `dist/` |
 |---|---|---|
-| macOS | `npm run dist:mac` | `Basil Draw-0.3.0-arm64.dmg` |
-| Windows | `npm run dist:win` | `Basil-Draw-Setup-0.3.0.exe` (64-bit) |
-| Linux | `npm run dist:linux` | `Basil Draw-0.3.0.AppImage` (x64) |
+| macOS | `npm run dist:mac` | `Basil-Draw-0.3.0-arm64.dmg` (Apple Silicon) |
+| Windows | `npm run dist:win` | `Basil-Draw-Setup-0.3.0-x64.exe` |
+| Linux | `npm run dist:linux` | `Basil-Draw-0.3.0-x86_64.AppImage` |
 
 Build each one on its own platform where you can. Building the Windows installer on macOS or Linux
 also works, but needs Wine (`brew install --cask wine-stable` or `sudo apt install wine`).
@@ -35,8 +35,8 @@ None of the builds are code-signed:
   files open in Basil Draw when double-clicked. Uninstall from Settings › Apps.
 - **Linux:** no installation needed — make the AppImage executable and run it:
   ```bash
-  chmod +x "dist/Basil Draw-0.3.0.AppImage"
-  "./dist/Basil Draw-0.3.0.AppImage"
+  chmod +x dist/Basil-Draw-0.3.0-x86_64.AppImage
+  ./dist/Basil-Draw-0.3.0-x86_64.AppImage
   ```
   AppImages need FUSE 2. On Ubuntu 22.04 and newer, if it won't start, install it with
   `sudo apt install libfuse2t64` (24.04) or `sudo apt install libfuse2` (22.04).

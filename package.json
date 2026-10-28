@@ -42,7 +42,8 @@
       "target": [
         "dmg"
       ],
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "artifactName": "Basil-Draw-${version}-${arch}.${ext}"
     },
     "win": {
       "target": [
@@ -59,7 +60,8 @@
       "target": [
         "AppImage"
       ],
-      "icon": "build/icon.png"
+      "icon": "build/icon.png",
+      "artifactName": "Basil-Draw-${version}-${arch}.${ext}"
     },
     "directories": {
       "buildResources": "build",
@@ -72,7 +74,7 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Basil Draw",
-      "artifactName": "Basil-Draw-Setup-${version}.${ext}",
+      "artifactName": "Basil-Draw-Setup-${version}-${arch}.${ext}",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico"
