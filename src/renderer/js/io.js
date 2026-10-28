@@ -50,7 +50,7 @@ const browserApi = {
   async focusWindow() { return true; },
   async closeAll() { window.close(); return true; },
   async quit() { window.close(); return true; },
-  async version() { return '0.3.0'; },
+  async version() { return '0.3.1'; },
   setWindowState() {},
   forceClose() { window.close(); },
   editRole(role) { document.execCommand(role); },

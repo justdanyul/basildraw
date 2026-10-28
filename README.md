@@ -21,9 +21,9 @@ npm start          # opens Basil Draw
 
 | Platform | Command | Result in `dist/` |
 |---|---|---|
-| macOS | `npm run dist:mac` | `Basil-Draw-0.3.0-arm64.dmg` (Apple Silicon) |
-| Windows | `npm run dist:win` | `Basil-Draw-Setup-0.3.0-x64.exe` |
-| Linux | `npm run dist:linux` | `Basil-Draw-0.3.0-x86_64.AppImage` |
+| macOS | `npm run dist:mac` | `Basil-Draw-0.3.1-arm64.dmg` (Apple Silicon) |
+| Windows | `npm run dist:win` | `Basil-Draw-Setup-0.3.1-x64.exe` |
+| Linux | `npm run dist:linux` | `Basil-Draw-0.3.1-x86_64.AppImage` |
 
 Build each one on its own platform where you can. Building the Windows installer on macOS or Linux
 also works, but needs Wine (`brew install --cask wine-stable` or `sudo apt install wine`).
@@ -31,12 +31,14 @@ also works, but needs Wine (`brew install --cask wine-stable` or `sudo apt insta
 None of the builds are code-signed:
 - **macOS:** the first time, right-click the app and choose **Open**.
 - **Windows:** SmartScreen may say "Windows protected your PC" — click **More info → Run anyway**.
-  The installer asks where to install and adds Start menu and desktop shortcuts, and `.bdraw`
-  files open in Basil Draw when double-clicked. Uninstall from Settings › Apps.
+  The installer installs for all users (by default into `C:\Program Files\Basil Draw`), so Windows
+  asks "Do you want to allow this app to make changes to your device?" — click **Yes**. It adds
+  Start menu and desktop shortcuts, and `.bdraw` files open in Basil Draw when double-clicked.
+  Running a newer installer upgrades the existing installation. Uninstall from Settings › Apps.
 - **Linux:** no installation needed — make the AppImage executable and run it:
   ```bash
-  chmod +x dist/Basil-Draw-0.3.0-x86_64.AppImage
-  ./dist/Basil-Draw-0.3.0-x86_64.AppImage
+  chmod +x dist/Basil-Draw-0.3.1-x86_64.AppImage
+  ./dist/Basil-Draw-0.3.1-x86_64.AppImage
   ```
   AppImages need FUSE 2. On Ubuntu 22.04 and newer, if it won't start, install it with
   `sudo apt install libfuse2t64` (24.04) or `sudo apt install libfuse2` (22.04).
