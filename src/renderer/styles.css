@@ -43,7 +43,7 @@ body.platform-darwin #topbar { padding-left: 84px; }
 body.platform-win32 #topbar { padding-right: 150px; }
 #tb-left { display: flex; align-items: center; gap: 6px; min-width: 0; }
 #app-logo { display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center; }
-#doc-title { font-weight: 600; font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40vw; text-align: center; }
+#doc-title { pointer-events: none; font-weight: 600; font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 40vw; text-align: center; }
 #doc-title .dt-dirty { color: var(--muted); font-weight: 400; }
 #menubar { display: flex; gap: 1px; -webkit-app-region: no-drag; }
 .menutop {
@@ -52,7 +52,6 @@ body.platform-win32 #topbar { padding-right: 150px; }
 .menutop:hover, .menutop.open { background: rgba(31, 36, 48, .07); }
 
 /* ---------- popups & menus ---------- */
-#popup-layer { -webkit-app-region: no-drag; }
 .popup { position: fixed; z-index: 1000; -webkit-app-region: no-drag; }
 .menu {
   background: var(--panel); min-width: 210px; padding: 5px; border-radius: 10px;
@@ -215,7 +214,8 @@ select { padding: 4px 6px; }
 .linkbtn { background: none; border: 0; color: var(--accent); padding: 4px 0; font-weight: 500; cursor: pointer; }
 
 /* ---------- dialogs ---------- */
-#dialog-layer { position: fixed; inset: 0; pointer-events: none; z-index: 500; -webkit-app-region: no-drag; }
+/* Note: no app-region here — this layer always covers the window and would block title-bar dragging. */
+#dialog-layer { position: fixed; inset: 0; pointer-events: none; z-index: 500; }
 .dlg-overlay {
   position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: auto;
   background: rgba(20, 24, 40, .28); -webkit-app-region: no-drag; animation: fade .12s ease-out;
