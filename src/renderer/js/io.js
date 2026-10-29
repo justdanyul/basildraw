@@ -5,6 +5,8 @@ import { serialize, deserialize, newDocument, createObject, clone } from './mode
 import { renderPageSVG } from './render.js';
 import { objBounds, unionBounds, cm } from './geometry.js';
 import { printSizeInches } from './ui/dialogs.js';
+import { parseDrw, drwToDocument, rgbaToPngDataUrl, base64ToBytes } from './drw.js';
+import { updateTextMetrics } from './render.js';
 
 // ---------- browser fallback ----------
 const browserApi = {
@@ -18,8 +20,12 @@ const browserApi = {
         const file = input.files[0];
         if (!file) return resolve(null);
         const reader = new FileReader();
-        reader.onload = () => resolve(opts.asDataUrl ? { path: file.name, dataUrl: reader.result } : { path: file.name, content: reader.result });
-        if (opts.asDataUrl) reader.readAsDataURL(file); else reader.readAsText(file);
+        const binary = opts.drawing && /\.drw$/i.test(file.name);
+        reader.onload = () => {
+          if (binary) resolve({ path: file.name, base64: String(reader.result).split(',')[1] || '' });
+          else resolve(opts.asDataUrl ? { path: file.name, dataUrl: reader.result } : { path: file.name, content: reader.result });
+        };
+        if (opts.asDataUrl || binary) reader.readAsDataURL(file); else reader.readAsText(file);
       };
       input.click();
     });
@@ -50,7 +56,7 @@ const browserApi = {
   async focusWindow() { return true; },
   async closeAll() { window.close(); return true; },
   async quit() { window.close(); return true; },
-  async version() { return '0.3.1'; },
+  async version() { return '0.4.0'; },
   setWindowState() {},
   forceClose() { window.close(); },
   editRole(role) { document.execCommand(role); },
@@ -61,7 +67,12 @@ const browserApi = {
 export const api = window.basil || browserApi;
 export const isMac = api.platform === 'darwin';
 
-const drawingFilters = [{ name: 'Basil Draw drawings', extensions: ['bdraw', 'bdraw'] }];
+const drawingFilters = [{ name: 'Basil Draw drawings', extensions: ['bdraw'] }];
+const openFilters = [
+  { name: 'Drawings', extensions: ['bdraw', 'pdraw', 'drw'] },
+  { name: 'Basil Draw drawings', extensions: ['bdraw', 'pdraw'] },
+  { name: 'Old DRW drawings', extensions: ['drw'] },
+];
 
 export class FileOps {
   constructor(app) {
@@ -81,21 +92,39 @@ export class FileOps {
   async open(path = null) {
     let res;
     if (path) res = await api.readFile(path);
-    else res = await api.openFile({ title: 'Open Drawing', filters: [...drawingFilters, { name: 'All files', extensions: ['*'] }], accept: '.bdraw,.bdraw' });
+    else res = await api.openFile({ title: 'Open Drawing', drawing: true, filters: [...openFilters, { name: 'All files', extensions: ['*'] }], accept: '.bdraw,.pdraw,.drw' });
     if (!res) return false;
-    let doc;
-    try { doc = deserialize(res.content); } catch (err) {
-      this.app.alert('Open', `Sorry, "${res.path.split(/[\\/]/).pop()}" could not be opened.\n\n${err.message}`);
-      return false;
-    }
+    const fileName = res.path.split(/[\\/]/).pop();
     // Open in this window if it's an untouched empty drawing, otherwise in a new one.
     if (this.ed.dirty || this.ed.doc.objects.length || this.ed.filePath) {
       if (window.basil) { await api.newWindow(res.path); return true; }
     }
-    this.ed.loadDocument(doc, res.path);
+    let doc;
+    let warnings = [];
+    const isDrw = res.base64 !== undefined;
+    try {
+      if (isDrw) ({ doc, warnings } = await this.importDrw(base64ToBytes(res.base64)));
+      else doc = deserialize(res.content);
+    } catch (err) {
+      this.app.alert('Open', `Sorry, "${fileName}" could not be opened.\n\n${err.message}`);
+      return false;
+    }
+    if (isDrw) {
+      // Never write Basil Draw data over the old file: Save asks for a new name.
+      this.ed.loadDocument(doc, null, fileName.replace(/\.drw$/i, ''));
+      this.app.setHint(`Opened the old drawing ${fileName}. Use Save As to keep it as a Basil Draw drawing.`);
+      if (warnings.length) this.app.alert('Open', `"${fileName}" was opened, but not everything could be brought across:\n\n${warnings.join('\n')}`);
+    } else {
+      this.ed.loadDocument(doc, res.path);
+    }
     api.addRecent(res.path);
     this.updateWindowState();
     return true;
+  }
+
+  async importDrw(bytes) {
+    const drw = parseDrw(bytes);
+    return drwToDocument(drw, { encodeImage: rgbaToPngDataUrl, measureText: updateTextMetrics });
   }
 
   async save() {

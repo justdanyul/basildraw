@@ -109,7 +109,7 @@ Help (Basil Draw guide) ✅ · Keyboard shortcuts ✅ · About Basil Draw ✅
 ## File formats
 - Native: `.bdraw` (JSON). ✅
 - Export: PNG, SVG, PDF. ✅
-- Import original `.DRW` files: reverse-engineer the format from sample files for interoperability. 🧊 (needs sample drawings)
+- Import original `.DRW` files ✅ (File › Open; opens as an untitled copy). Supported: rectangles, rounded rectangles, ellipses, arcs, lines, polylines, polygons, Bézier and spline curves, complex (combined) objects, groups, simple and rich text, 8/24-bit pictures (full-quality embedded copy when present), rotation, line styles, solid and gradient fills. Approximated: bitmap pattern fills (solid colour), mixed fonts inside one text object (first font used), text on a path and clip paths (left out).
 
 ## Project Wizard (v0.2)
 Three steps: choose a project → pick a style → type the words (with a live preview).

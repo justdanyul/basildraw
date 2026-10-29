@@ -115,7 +115,17 @@ function fromEvent(event) {
 }
 
 // ---------- IPC ----------
-const drawingFilters = [{ name: 'Basil Draw drawings', extensions: ['bdraw', 'bdraw'] }];
+const drawingFilters = [
+  { name: 'Drawings', extensions: ['bdraw', 'pdraw', 'drw'] },
+  { name: 'Basil Draw drawings', extensions: ['bdraw', 'pdraw'] },
+  { name: 'Old DRW drawings', extensions: ['drw'] },
+];
+
+// Old .DRW drawings are binary; hand them to the window as base64.
+function readDrawing(p) {
+  if (/\.drw$/i.test(p)) return { path: p, base64: fs.readFileSync(p).toString('base64') };
+  return { path: p, content: fs.readFileSync(p, 'utf8') };
+}
 
 ipcMain.handle('file:open', async (event, opts = {}) => {
   const win = fromEvent(event);
@@ -133,19 +143,18 @@ ipcMain.handle('file:open', async (event, opts = {}) => {
       bmp: 'image/bmp', svg: 'image/svg+xml', webp: 'image/webp' }[ext] || 'application/octet-stream';
     return { path: p, dataUrl: `data:${mime};base64,${buf.toString('base64')}` };
   }
+  if (opts.drawing) return readDrawing(p);
   return { path: p, content: fs.readFileSync(p, 'utf8') };
 });
 
-ipcMain.handle('file:read', async (_event, p) => {
-  return { path: p, content: fs.readFileSync(p, 'utf8') };
-});
+ipcMain.handle('file:read', async (_event, p) => readDrawing(p));
 
 ipcMain.handle('file:saveDialog', async (event, opts = {}) => {
   const win = fromEvent(event);
   const res = await dialog.showSaveDialog(win, {
     title: opts.title || 'Save As',
     defaultPath: opts.defaultPath,
-    filters: opts.filters || drawingFilters,
+    filters: opts.filters || [{ name: 'Basil Draw drawings', extensions: ['bdraw'] }],
   });
   if (res.canceled || !res.filePath) return null;
   return res.filePath;
@@ -272,7 +281,7 @@ app.whenReady().then(() => {
     credits: 'A friendly drawing program, made for Dad.',
   });
   buildNativeMenu();
-  const argFile = process.argv.slice(1).find((a) => /\.[bp]draw$/i.test(a) && fs.existsSync(a));
+  const argFile = process.argv.slice(1).find((a) => /\.([bp]draw|drw)$/i.test(a) && fs.existsSync(a));
   if (argFile) pendingOpenFiles.push(path.resolve(argFile));
   if (pendingOpenFiles.length) pendingOpenFiles.forEach((f) => createWindow(f));
   else createWindow();

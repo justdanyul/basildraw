@@ -76,6 +76,20 @@ const list = await win2.evaluate(() => window.basil.listWindows());
 check(list.length === 2, `two windows listed (${list.map((w) => w.title).join(', ')})`);
 await win2.screenshot({ path: path.join(out, 'electron-reopened.png') });
 
+// Open an old .DRW drawing (built by the DRW unit test) in a new window
+const { execFileSync } = await import('node:child_process');
+const drwFile = path.join(tmp, 'Old Drawing.drw');
+execFileSync(process.execPath, [path.join(here, 'drw-unit.mjs'), drwFile], { stdio: 'ignore' });
+const [win3] = await Promise.all([
+  app.waitForEvent('window'),
+  win.evaluate((p) => window.basil.newWindow(p), drwFile),
+]);
+await win3.waitForFunction(() => window.basilApp && window.basilApp.editor.doc.objects.length === 7, null, { timeout: 10000 });
+check(await win3.evaluate(() => !window.basilApp.editor.filePath && window.basilApp.editor.docName === 'Old Drawing'),
+  'old .DRW drawing opens as an untitled copy');
+await win3.screenshot({ path: path.join(out, 'electron-drw.png') });
+await win3.evaluate(() => window.basil.forceClose());
+
 // close without prompting
 await win2.evaluate(() => window.basil.forceClose());
 await win.evaluate(() => window.basil.forceClose());

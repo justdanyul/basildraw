@@ -150,7 +150,7 @@ export function serialize(doc, objects = null) {
 
 export function deserialize(text) {
   const data = JSON.parse(text);
-  if (data.format !== 'basil-draw' && data.format !== 'basil-draw') throw new Error('This is not a Basil Draw drawing.');
+  if (data.format !== 'basil-draw' && data.format !== 'penguin-draw') throw new Error('This is not a Basil Draw drawing.');
   const base = newDocument();
   const doc = { ...base, ...data };
   doc.page = { ...base.page, ...(data.page || {}) };

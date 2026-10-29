@@ -118,14 +118,7 @@ class App {
       this.editor.setDirty(true);
       this.files.updateWindowState();
     } else if (file) {
-      const res = await api.readFile(file).catch(() => null);
-      if (res) {
-        try {
-          this.editor.loadDocument(deserialize(res.content), res.path);
-          api.addRecent(res.path);
-          this.files.updateWindowState();
-        } catch (err) { this.alert('Open', `Sorry, that file could not be opened.\n\n${err.message}`); }
-      }
+      await this.files.open(file).catch((err) => this.alert('Open', `Sorry, that file could not be opened.\n\n${err.message}`));
     } else if (pasteStamp && Date.now() - pasteStamp < 15000) {
       localStorage.removeItem('basil.pasteAsNew');
       this.commands.paste();

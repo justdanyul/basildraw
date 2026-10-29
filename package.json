@@ -1,7 +1,7 @@
 {
   "name": "basil-draw",
   "productName": "Basil Draw",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "A friendly vector drawing program in the spirit of the classic 1990s Windows drawing apps.",
   "main": "src/main/main.js",
   "author": "Daniel Mouritsen",
@@ -9,7 +9,7 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "test": "node test/smoke.mjs",
+    "test": "node --no-warnings test/drw-unit.mjs && node test/smoke.mjs",
     "dist:mac": "electron-builder --mac --publish never",
     "dist:win": "electron-builder --win --publish never",
     "dist:linux": "electron-builder --linux --publish never"
@@ -35,6 +35,11 @@
         "ext": "pdraw",
         "name": "Basil Draw Drawing (old)",
         "role": "Editor"
+      },
+      {
+        "ext": "drw",
+        "name": "Old DRW Drawing",
+        "role": "Viewer"
       }
     ],
     "mac": {

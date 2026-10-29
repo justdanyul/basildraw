@@ -21,9 +21,9 @@ npm start          # opens Basil Draw
 
 | Platform | Command | Result in `dist/` |
 |---|---|---|
-| macOS | `npm run dist:mac` | `Basil-Draw-0.3.1-arm64.dmg` (Apple Silicon) |
-| Windows | `npm run dist:win` | `Basil-Draw-Setup-0.3.1-x64.exe` |
-| Linux | `npm run dist:linux` | `Basil-Draw-0.3.1-x86_64.AppImage` |
+| macOS | `npm run dist:mac` | `Basil-Draw-0.4.0-arm64.dmg` (Apple Silicon) |
+| Windows | `npm run dist:win` | `Basil-Draw-Setup-0.4.0-x64.exe` |
+| Linux | `npm run dist:linux` | `Basil-Draw-0.4.0-x86_64.AppImage` |
 
 Build each one on its own platform where you can. Building the Windows installer on macOS or Linux
 also works, but needs Wine (`brew install --cask wine-stable` or `sudo apt install wine`).
@@ -33,12 +33,13 @@ None of the builds are code-signed:
 - **Windows:** SmartScreen may say "Windows protected your PC" — click **More info → Run anyway**.
   The installer installs for all users (by default into `C:\Program Files\Basil Draw`), so Windows
   asks "Do you want to allow this app to make changes to your device?" — click **Yes**. It adds
-  Start menu and desktop shortcuts, and `.bdraw` files open in Basil Draw when double-clicked.
+  Start menu and desktop shortcuts, and `.bdraw` (and old `.drw`) files open in Basil Draw when
+  double-clicked.
   Running a newer installer upgrades the existing installation. Uninstall from Settings › Apps.
 - **Linux:** no installation needed — make the AppImage executable and run it:
   ```bash
-  chmod +x dist/Basil-Draw-0.3.1-x86_64.AppImage
-  ./dist/Basil-Draw-0.3.1-x86_64.AppImage
+  chmod +x dist/Basil-Draw-0.4.0-x86_64.AppImage
+  ./dist/Basil-Draw-0.4.0-x86_64.AppImage
   ```
   AppImages need FUSE 2. On Ubuntu 22.04 and newer, if it won't start, install it with
   `sudo apt install libfuse2t64` (24.04) or `sudo apt install libfuse2` (22.04).
@@ -83,10 +84,13 @@ If `npm start` fails on Linux with a message about the *chrome-sandbox* helper, 
 - Unlimited-ish undo (100 steps by default), cut/copy/paste between windows, format painter.
 - Page Setup (screen sizes, paper sizes, cards, labels, banners, posters, custom).
 - Save/open `.bdraw` files, **export to PNG, SVG and PDF**, print and print preview.
+- **Opens old `.DRW` drawings** from the classic 1990s Windows drawing programs: shapes, lines, curves,
+  groups, text and pictures come across as normal, editable Basil Draw objects. The old file is never
+  changed — use Save As to keep a `.bdraw` copy.
 - A small library of original clip art, and Insert Picture for your own photos.
 
 See [SPEC.md](SPEC.md) for the full feature list and what's planned next
-(connector lines that stay attached, opening old `.DRW` files, folded-card printing).
+(connector lines that stay attached, folded-card printing).
 
 ## Tips for Mac users
 
@@ -99,7 +103,10 @@ See [SPEC.md](SPEC.md) for the full feature list and what's planned next
 - `src/renderer/` — the drawing window (plain ES modules, no build step).
   - `js/editor.js` document, selection, zoom, rendering · `js/tools.js` mouse tools ·
     `js/commands.js` every menu command · `js/shapes.js` the shape library ·
-    `js/render.js` SVG rendering · `js/ui/` menus, toolbars, dialogs.
+    `js/render.js` SVG rendering · `js/drw.js` the `.DRW` reader · `js/ui/` menus, toolbars, dialogs.
 - Tests: `npm test` runs the drawing window in headless Chromium and exercises the main features
   (needs Playwright: `npm i -D playwright && npx playwright install chromium`).
   `node test/electron-smoke.mjs` launches the real Electron app.
+  `node test/drw-smoke.mjs some.drw …` opens `.DRW` files and saves a picture of each in `test/out/`.
+- The `.DRW` record layout was worked out from sample files, with the DRW import filter in
+  [Scribus](https://www.scribus.net) (GPL) as a guide to what the records mean. No code was copied.
